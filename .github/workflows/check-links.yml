@@ -1,0 +1,39 @@
+name: Weekly link check
+
+on:
+  schedule:
+    - cron: "17 12 * * 1"   # every Monday, 8:17 a.m. Santo Domingo time
+  workflow_dispatch: {}      # also lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check links
+        run: python scripts/check_links.py links.json
+
+      - name: Save automatic switches
+        run: |
+          if ! git diff --quiet links.json; then
+            git config user.name "sogdia-robot"
+            git config user.email "sogdia-robot@users.noreply.github.com"
+            git add links.json
+            git commit -m "Robot: switch broken links to backup/official"
+            git push
+          fi
+
+      - name: Open an issue with the report
+        if: hashFiles('report.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "Link check $(date +%Y-%m-%d)" --body-file report.md

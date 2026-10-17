@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<title>Sogdia – Global Shopping</title>
+<meta name="description" content="Sogdia – The world's marketplace, in your language. Trusted partner stores from around the world in one place.">
+<meta name="theme-color" content="#14213d">
+<style>
+:root{
+  --lapis:#14213d; --lapis2:#1f3360; --gold:#e9a23b; --gold2:#f4c46e;
+  --sand:#faf6ee; --card:#ffffff; --ink:#1d2333; --muted:#5c6475;
+  --terra:#b5523b; --line:#e7dfd0;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--sand);color:var(--ink);line-height:1.45}
+a{color:inherit}
+header{background:linear-gradient(160deg,var(--lapis),var(--lapis2));color:#fff;padding:22px 16px 26px;text-align:center}
+.logo{display:inline-flex;align-items:center;gap:10px}
+.logo svg{width:44px;height:44px}
+.logo h1{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:2.1rem;letter-spacing:.06em;color:var(--gold2)}
+.tagline{margin:6px 0 0;font-size:1rem;opacity:.92}
+.story{max-width:720px;margin:14px auto 0;font-size:.88rem;opacity:.8}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.search{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:1rem;background:#fff}
+.label{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 6px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 14px;border-radius:999px;font-size:.9rem;cursor:pointer}
+.chip.on{background:var(--lapis);border-color:var(--lapis);color:#fff}
+.note{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;background:#fff3ef;border:1px solid #f1c9bd;color:#7a2f1e;font-size:.88rem}
+.count{margin:14px 0 8px;color:var(--muted);font-size:.85rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.card h3{margin:0;font-size:1.05rem}
+.card p{margin:0;font-size:.9rem;color:var(--muted);flex:1}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:.72rem;padding:3px 8px;border-radius:999px;background:#f1ebdf;color:#6b5a3a}
+.badge.io{background:#fbe3dc;color:#8a3420}
+.btn{display:block;text-align:center;text-decoration:none;background:var(--gold);color:var(--lapis);font-weight:700;padding:10px;border-radius:10px}
+.btn:active{background:var(--gold2)}
+.ext{font-size:.72rem;color:var(--muted);text-align:center}
+.empty{display:none;text-align:center;color:var(--muted);padding:30px 0}
+.disclosure{margin:26px 0 8px;padding:14px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+footer{text-align:center;padding:18px 16px 30px;font-size:.85rem;color:var(--muted)}
+footer a{color:var(--lapis2)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="29" fill="none" stroke="#f4c46e" stroke-width="3"/>
+      <path d="M32 9 L37 32 L32 55 L27 32 Z" fill="#e9a23b"/>
+      <path d="M9 32 L32 28 L55 32 L32 36 Z" fill="#f4c46e" opacity=".55"/>
+      <circle cx="32" cy="32" r="4" fill="#14213d" stroke="#f4c46e" stroke-width="2"/>
+    </svg>
+    <h1 class="notranslate">Sogdia</h1>
+  </div>
+  <p class="tagline">The world's marketplace, in your language</p>
+  <p class="story">Inspired by the Sogdian merchants of the Silk Road, who connected peoples, cultures and languages through fair trade.</p>
+</header>
+
+<main>
+  <input id="q" class="search" type="search" placeholder="Search stores…" aria-label="Search stores">
+
+  <div class="label">Region</div>
+  <div class="chips" id="regions"></div>
+
+  <div class="label">Category</div>
+  <div class="chips" id="cats"></div>
+
+  <div class="note" id="ioNote">These stores only work for shoppers located in India.</div>
+
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty">No stores found.</div>
+
+  <div class="disclosure">
+    <strong>Affiliate disclosure:</strong> Sogdia contains affiliate links. When you buy through them we may earn a small commission, at no extra cost to you. Purchases, payments, shipping and returns are handled entirely by each partner store under its own terms.
+  </div>
+</main>
+
+<footer>
+  <a href="privacy.html">Privacy Policy</a> · © 2026 Sogdia by DriftforgeDev
+</footer>
+
+<script>
+const REGIONS = [
+  ["all","All"],["worldwide","Worldwide"],["usa-europe","USA & Europe"],
+  ["india","India"],["india-only","India Only"],["china","China"]
+];
+const CATS = [
+  ["all","All"],["marketplace","Marketplaces"],["electronics","Electronics"],["software","Software & Games"],
+  ["fashion","Fashion"],["jewelry","Jewelry"],["beauty","Beauty"],["home","Home"],["gifts","Gifts"],
+  ["tools","Tools"],["outdoor","Outdoor & Travel"],["kids","Kids"],["shipping","Shipping"]
+];
+const REGION_NAME = Object.fromEntries(REGIONS);
+const CAT_NAME = Object.fromEntries(CATS);
+let STORES = [], region = "all", cat = "all";
+
+function chipRow(el, list, getVal, setVal){
+  el.innerHTML = "";
+  list.forEach(([v,t])=>{
+    const b = document.createElement("button");
+    b.className = "chip" + (getVal()===v ? " on" : "");
+    b.textContent = t; b.dataset.v = v;
+    b.onclick = ()=>{ setVal(v); [...el.children].forEach(c=>c.classList.toggle("on", c.dataset.v===v)); apply(); };
+    el.appendChild(b);
+  });
+}
+
+function linkFor(s){
+  const k = s.active || "primary";
+  return s[k] || s.primary || s.official;
+}
+
+function render(){
+  const g = document.getElementById("grid");
+  g.innerHTML = "";
+  STORES.forEach(s=>{
+    const c = document.createElement("div");
+    c.className = "card"; c.dataset.region = s.region; c.dataset.cat = s.category;
+    c.dataset.text = (s.name+" "+s.description+" "+s.category).toLowerCase();
+    c.innerHTML =
+      '<h3 class="notranslate"></h3>' +
+      '<div class="badges"><span class="badge rg"></span><span class="badge ct"></span></div>' +
+      '<p></p>' +
+      '<a class="btn" target="_blank" rel="sponsored noopener">Visit store</a>' +
+      '<div class="ext">Opens partner site</div>';
+    c.querySelector("h3").textContent = s.name;
+    const rg = c.querySelector(".rg"); rg.textContent = REGION_NAME[s.region] || s.region;
+    if (s.region === "india-only") rg.classList.add("io");
+    c.querySelector(".ct").textContent = CAT_NAME[s.category] || s.category;
+    c.querySelector("p").textContent = s.description;
+    c.querySelector("a").href = linkFor(s);
+    g.appendChild(c);
+  });
+}
+
+function apply(){
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  let n = 0;
+  document.querySelectorAll(".card").forEach(c=>{
+    const ok = (region==="all" || c.dataset.region===region) &&
+               (cat==="all" || c.dataset.cat===cat) &&
+               (!q || c.dataset.text.includes(q) || c.textContent.toLowerCase().includes(q));
+    c.style.display = ok ? "" : "none"; if (ok) n++;
+  });
+  document.getElementById("count").textContent = n + " stores";
+  document.getElementById("empty").style.display = n ? "none" : "block";
+  document.getElementById("ioNote").style.display = region==="india-only" ? "block" : "none";
+}
+
+async function init(){
+  chipRow(document.getElementById("regions"), REGIONS, ()=>region, v=>region=v);
+  chipRow(document.getElementById("cats"), CATS, ()=>cat, v=>cat=v);
+  document.getElementById("q").addEventListener("input", apply);
+  try{
+    const r = await fetch("links.json?v=" + Date.now(), {cache:"no-store"});
+    STORES = (await r.json()).stores;
+  }catch(e){ STORES = []; }
+  render(); apply();
+  autoTranslate();
+}
+
+/* ===== Automatic translation (no Google banner) ===== */
+const KEEP = new Set(["sogdia","driftforgedev"]);
+async function autoTranslate(){
+  let lang = (navigator.language || navigator.userLanguage || "en").split("-")[0].toLowerCase();
+  if (!lang || lang === "en") return;
+  STORES.forEach(s=>KEEP.add(s.name.toLowerCase()));
+  let cache = {};
+  try{ cache = JSON.parse(localStorage.getItem("tr_"+lang) || "{}"); }catch(e){}
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode(n){
+      const p = n.parentElement;
+      if (!p || p.closest("script,style,noscript,.notranslate")) return NodeFilter.FILTER_REJECT;
+      const t = n.nodeValue.trim();
+      if (!t || t.length < 2 || /^[\d\s.,·©%+\-–—…]+$/.test(t)) return NodeFilter.FILTER_REJECT;
+      if (KEEP.has(t.toLowerCase())) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+  const ph = document.getElementById("q");
+  const tr = async (text)=>{
+    if (cache[text]) return cache[text];
+    const url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl="+lang+"&dt=t&q="+encodeURIComponent(text);
+    const res = await fetch(url); const j = await res.json();
+    let out = j[0].map(x=>x[0]).join("");
+    if (/^[A-Z]/.test(text) && out) out = out.charAt(0).toUpperCase() + out.slice(1);
+    cache[text] = out; return out;
+  };
+  let i = 0;
+  async function worker(){
+    while (i < nodes.length){
+      const n = nodes[i++]; const orig = n.nodeValue; const t = orig.trim();
+      try{ const out = await tr(t); n.nodeValue = orig.replace(t, out); }catch(e){}
+    }
+  }
+  await Promise.all(Array.from({length:6}, worker));
+  try{ ph.placeholder = await tr(ph.placeholder); }catch(e){}
+  try{ localStorage.setItem("tr_"+lang, JSON.stringify(cache)); }catch(e){}
+}
+
+init();
+</script>
+</body>
+</html>
