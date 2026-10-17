@@ -42,6 +42,12 @@ main{max-width:1000px;margin:0 auto;padding:16px}
 .btn:active{background:var(--gold2)}
 .ext{font-size:.72rem;color:var(--muted);text-align:center}
 .empty{display:none;text-align:center;color:var(--muted);padding:30px 0}
+.free{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:.86rem;color:var(--muted)}
+.free summary{list-style:none;display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;cursor:pointer}
+.free summary::-webkit-details-marker{display:none}
+.free .plus{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--lapis);color:#fff;display:grid;place-items:center;font-size:1.1rem;line-height:1}
+.free[open] .plus{transform:rotate(45deg)}
+.free p{margin:0;padding:0 12px 12px}
 .disclosure{margin:26px 0 8px;padding:14px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:.85rem;color:var(--muted)}
 footer{text-align:center;padding:18px 16px 30px;font-size:.85rem;color:var(--muted)}
 footer a{color:var(--lapis2)}
@@ -65,6 +71,11 @@ footer a{color:var(--lapis2)}
 <main>
   <input id="q" class="search" type="search" placeholder="Search stores…" aria-label="Search stores">
 
+  <details class="free" id="free">
+    <summary><span>💡 <strong>Why Sogdia is free:</strong> we may earn a small commission when you shop, at no extra cost to you.</span><b class="plus" aria-hidden="true">+</b></summary>
+    <p>Purchases, payments, shipping and returns are handled entirely by each partner store under its own terms. Prices are the same as buying directly from the store.</p>
+  </details>
+
   <div class="label">Region</div>
   <div class="chips" id="regions"></div>
 
@@ -77,13 +88,11 @@ footer a{color:var(--lapis2)}
   <div class="grid" id="grid"></div>
   <div class="empty" id="empty">No stores found.</div>
 
-  <div class="disclosure">
-    <strong>Affiliate disclosure:</strong> Sogdia contains affiliate links. When you buy through them we may earn a small commission, at no extra cost to you. Purchases, payments, shipping and returns are handled entirely by each partner store under its own terms.
-  </div>
+
 </main>
 
 <footer>
-  <a href="privacy.html">Privacy Policy</a> · © 2026 Sogdia by DriftforgeDev
+  <a href="#free" onclick="document.getElementById('free').open=true">Why Sogdia is free</a> · <a href="privacy.html">Privacy Policy</a><br> © 2026 Sogdia by DriftforgeDev
 </footer>
 
 <script>
