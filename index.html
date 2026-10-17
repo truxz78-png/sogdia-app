@@ -98,7 +98,7 @@ footer a{color:var(--lapis2)}
 <script>
 const REGIONS = [
   ["all","All"],["worldwide","Worldwide"],["usa-europe","USA & Europe"],
-  ["india","India"],["india-only","India Only"],["china","From China"]
+  ["china","From China"],["india","India"],["india-only","India Only"]
 ];
 const CATS = [
   ["all","All"],["marketplace","Marketplaces"],["electronics","Electronics"],["software","Software & Games"],
@@ -107,7 +107,7 @@ const CATS = [
 ];
 const REGION_NAME = Object.fromEntries(REGIONS);
 const CAT_NAME = Object.fromEntries(CATS);
-let STORES = [], region = "all", cat = "all", WORD_STORES = "stores";
+let STORES = [], region = "all", cat = "all", WORD_STORES = "stores available";
 
 function chipRow(el, list, getVal, setVal){
   el.innerHTML = "";
@@ -211,7 +211,7 @@ async function autoTranslate(){
   }
   await Promise.all(Array.from({length:6}, worker));
   try{ ph.placeholder = await tr(ph.placeholder); }catch(e){}
-  try{ WORD_STORES = (await tr("stores")).toLowerCase(); apply(); }catch(e){}
+  try{ WORD_STORES = (await tr("stores available")).toLowerCase(); apply(); }catch(e){}
   try{ localStorage.setItem("tr_"+lang, JSON.stringify(cache)); }catch(e){}
 }
 
