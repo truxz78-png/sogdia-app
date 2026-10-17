@@ -89,7 +89,7 @@ footer a{color:var(--lapis2)}
 <script>
 const REGIONS = [
   ["all","All"],["worldwide","Worldwide"],["usa-europe","USA & Europe"],
-  ["india","India"],["india-only","India Only"],["china","China"]
+  ["india","India"],["india-only","India Only"],["china","From China"]
 ];
 const CATS = [
   ["all","All"],["marketplace","Marketplaces"],["electronics","Electronics"],["software","Software & Games"],
@@ -98,7 +98,7 @@ const CATS = [
 ];
 const REGION_NAME = Object.fromEntries(REGIONS);
 const CAT_NAME = Object.fromEntries(CATS);
-let STORES = [], region = "all", cat = "all";
+let STORES = [], region = "all", cat = "all", WORD_STORES = "stores";
 
 function chipRow(el, list, getVal, setVal){
   el.innerHTML = "";
@@ -148,7 +148,7 @@ function apply(){
                (!q || c.dataset.text.includes(q) || c.textContent.toLowerCase().includes(q));
     c.style.display = ok ? "" : "none"; if (ok) n++;
   });
-  document.getElementById("count").textContent = n + " stores";
+  document.getElementById("count").textContent = n + " " + WORD_STORES;
   document.getElementById("empty").style.display = n ? "none" : "block";
   document.getElementById("ioNote").style.display = region==="india-only" ? "block" : "none";
 }
@@ -202,6 +202,7 @@ async function autoTranslate(){
   }
   await Promise.all(Array.from({length:6}, worker));
   try{ ph.placeholder = await tr(ph.placeholder); }catch(e){}
+  try{ WORD_STORES = (await tr("stores")).toLowerCase(); apply(); }catch(e){}
   try{ localStorage.setItem("tr_"+lang, JSON.stringify(cache)); }catch(e){}
 }
 
