@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17",
+  "updated": "2026-10-18",
   "stores": [
     {
       "id": "temu",
@@ -376,17 +376,6 @@
       "active": "primary"
     },
     {
-      "id": "meesho",
-      "name": "Meesho",
-      "category": "marketplace",
-      "region": "india",
-      "description": "Affordable everyday products from Indian sellers.",
-      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.meesho.com",
-      "backup": null,
-      "official": "https://www.meesho.com",
-      "active": "primary"
-    },
-    {
       "id": "croma",
       "name": "Croma",
       "category": "electronics",
@@ -398,28 +387,6 @@
       "active": "primary"
     },
     {
-      "id": "reliancedigital",
-      "name": "Reliance Digital",
-      "category": "electronics",
-      "region": "india",
-      "description": "Phones, TVs and appliances.",
-      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.reliancedigital.in",
-      "backup": null,
-      "official": "https://www.reliancedigital.in",
-      "active": "primary"
-    },
-    {
-      "id": "oneplusindia",
-      "name": "OnePlus India",
-      "category": "electronics",
-      "region": "india",
-      "description": "Official OnePlus phones and accessories.",
-      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.oneplus.in",
-      "backup": null,
-      "official": "https://www.oneplus.in",
-      "active": "primary"
-    },
-    {
       "id": "boat",
       "name": "boAt",
       "category": "electronics",
@@ -428,17 +395,6 @@
       "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.boat-lifestyle.com",
       "backup": null,
       "official": "https://www.boat-lifestyle.com",
-      "active": "primary"
-    },
-    {
-      "id": "nykaafashion",
-      "name": "Nykaa Fashion",
-      "category": "fashion",
-      "region": "india",
-      "description": "Clothing, footwear and accessories.",
-      "primary": "https://inr.deals/track?id=tru579161545&src=merchant-detail-backend&campaign=cps&url=https%3A%2F%2Fwww.nykaafashion.com%2F",
-      "backup": null,
-      "official": "https://www.nykaafashion.com/",
       "active": "primary"
     },
     {
@@ -497,17 +453,6 @@
       "active": "primary"
     },
     {
-      "id": "bewakoof",
-      "name": "Bewakoof",
-      "category": "fashion",
-      "region": "india",
-      "description": "Casual and graphic clothing.",
-      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.bewakoof.com",
-      "backup": null,
-      "official": "https://www.bewakoof.com",
-      "active": "primary"
-    },
-    {
       "id": "souledstore",
       "name": "The Souled Store",
       "category": "fashion",
@@ -538,6 +483,61 @@
       "primary": "https://tjzuh.com/g/bhq7k7hmcgf977a19dec0451de8123/",
       "backup": null,
       "official": "https://www.igp.com",
+      "active": "primary"
+    },
+    {
+      "id": "meesho",
+      "name": "Meesho",
+      "category": "marketplace",
+      "region": "india-only",
+      "description": "Affordable everyday products from Indian sellers.",
+      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.meesho.com",
+      "backup": null,
+      "official": "https://www.meesho.com",
+      "active": "primary"
+    },
+    {
+      "id": "reliancedigital",
+      "name": "Reliance Digital",
+      "category": "electronics",
+      "region": "india-only",
+      "description": "Phones, TVs and appliances.",
+      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.reliancedigital.in",
+      "backup": null,
+      "official": "https://www.reliancedigital.in",
+      "active": "primary"
+    },
+    {
+      "id": "oneplusindia",
+      "name": "OnePlus India",
+      "category": "electronics",
+      "region": "india-only",
+      "description": "Official OnePlus phones and accessories.",
+      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.oneplus.in",
+      "backup": null,
+      "official": "https://www.oneplus.in",
+      "active": "primary"
+    },
+    {
+      "id": "nykaafashion",
+      "name": "Nykaa Fashion",
+      "category": "fashion",
+      "region": "india-only",
+      "description": "Clothing, footwear and accessories.",
+      "primary": "https://inr.deals/track?id=tru579161545&src=merchant-detail-backend&campaign=cps&url=https%3A%2F%2Fwww.nykaafashion.com%2F",
+      "backup": null,
+      "official": "https://www.nykaafashion.com/",
+      "active": "primary"
+    },
+    {
+      "id": "bewakoof",
+      "name": "Bewakoof",
+      "category": "fashion",
+      "region": "india-only",
+      "description": "Casual and graphic clothing.",
+      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.bewakoof.com",
+      "backup": null,
+      "official": "https://www.bewakoof.com",
       "active": "primary"
     },
     {
