@@ -46,17 +46,6 @@
       "active": "primary"
     },
     {
-      "id": "hacoo",
-      "name": "Hacoo",
-      "category": "marketplace",
-      "region": "worldwide",
-      "description": "Trendy low-cost products. Best deals are inside the Hacoo app.",
-      "primary": "https://dorinebeaumont.com/g/84e1j7pvh1f977a19decf271888eea/",
-      "backup": null,
-      "official": "https://www.hacoo.com",
-      "active": "primary"
-    },
-    {
       "id": "geekbuying",
       "name": "Geekbuying",
       "category": "electronics",
@@ -409,17 +398,6 @@
       "active": "primary"
     },
     {
-      "id": "adidasindia",
-      "name": "Adidas India",
-      "category": "fashion",
-      "region": "india",
-      "description": "Sportswear and sneakers.",
-      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.adidas.co.in",
-      "backup": null,
-      "official": "https://www.adidas.co.in",
-      "active": "primary"
-    },
-    {
       "id": "pumaindia",
       "name": "Puma India",
       "category": "fashion",
@@ -483,6 +461,17 @@
       "primary": "https://tjzuh.com/g/bhq7k7hmcgf977a19dec0451de8123/",
       "backup": null,
       "official": "https://www.igp.com",
+      "active": "primary"
+    },
+    {
+      "id": "adidasindia",
+      "name": "Adidas India",
+      "category": "fashion",
+      "region": "india-only",
+      "description": "Sportswear and sneakers.",
+      "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.adidas.co.in",
+      "backup": null,
+      "official": "https://www.adidas.co.in",
       "active": "primary"
     },
     {
