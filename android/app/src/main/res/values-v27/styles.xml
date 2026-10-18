@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Sogdia" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/lapis</item>
+        <item name="colorPrimaryDark">@color/lapis</item>
+        <item name="colorAccent">@color/gold</item>
+        <item name="android:statusBarColor">@color/lapis</item>
+        <item name="android:navigationBarColor">@color/lapis</item>
+        <item name="android:windowBackground">@color/lapis</item>
+        <item name="android:colorBackground">@color/lapis</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>
