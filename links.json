@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-18",
+  "updated": "2026-10-20",
   "stores": [
     {
       "id": "temu",
@@ -76,6 +76,17 @@
       "primary": "https://tywhh.com/g/97h026mnpxf977a19dece95c5fd652/",
       "backup": null,
       "official": "https://meshnology.com",
+      "active": "primary"
+    },
+    {
+      "id": "casetify",
+      "name": "CASETiFY",
+      "category": "electronics",
+      "region": "worldwide",
+      "description": "Custom phone cases, tech accessories and gadgets for iPhone, Samsung and more.",
+      "primary": "https://bywiola.com/g/tv8h1uy8nif977a19dec2f7a77e67e/",
+      "backup": null,
+      "official": "https://www.casetify.com",
       "active": "primary"
     },
     {
