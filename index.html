@@ -96,10 +96,19 @@ footer a{color:var(--lapis2)}
 </footer>
 
 <script>
+/* "India Only" stores block visitors outside India, so they are shown
+   only when the phone's time zone or language says the visitor is in India. */
+const IN_INDIA = (()=>{
+  try{
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const langs = (navigator.languages || [navigator.language || ""]).join(",");
+    return /Asia\/(Kolkata|Calcutta)/.test(tz) || /-IN\b/i.test(langs);
+  }catch(e){ return false; }
+})();
 const REGIONS = [
   ["all","All"],["worldwide","Worldwide"],["usa-europe","USA & Europe"],
   ["china","From China"],["india","India"],["india-only","India Only"]
-];
+].filter(r => IN_INDIA || r[0] !== "india-only");
 const CATS = [
   ["all","All"],["marketplace","Marketplaces"],["electronics","Electronics"],["software","Software & Games"],
   ["fashion","Fashion"],["jewelry","Jewelry"],["beauty","Beauty"],["home","Home"],["gifts","Gifts"],
@@ -148,7 +157,18 @@ function render(){
   });
 }
 
+/* Only show categories that have stores in the chosen region (no empty screens). */
+function syncCats(){
+  const has = new Set(STORES.filter(s => region==="all" || s.region===region).map(s => s.category));
+  if (cat !== "all" && !has.has(cat)) cat = "all";
+  [...document.getElementById("cats").children].forEach(c=>{
+    c.style.display = (c.dataset.v==="all" || has.has(c.dataset.v)) ? "" : "none";
+    c.classList.toggle("on", c.dataset.v===cat);
+  });
+}
+
 function apply(){
+  syncCats();
   const q = document.getElementById("q").value.trim().toLowerCase();
   let n = 0;
   document.querySelectorAll(".card").forEach(c=>{
@@ -168,7 +188,7 @@ async function init(){
   document.getElementById("q").addEventListener("input", apply);
   try{
     const r = await fetch("links.json?v=" + Date.now(), {cache:"no-store"});
-    STORES = (await r.json()).stores;
+    STORES = (await r.json()).stores.filter(s => IN_INDIA || s.region !== "india-only");
   }catch(e){ STORES = []; }
   render(); apply();
   autoTranslate();
@@ -216,6 +236,9 @@ async function autoTranslate(){
 }
 
 init();
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", ()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+}
 </script>
 </body>
 </html>
