@@ -96,19 +96,10 @@ footer a{color:var(--lapis2)}
 </footer>
 
 <script>
-/* "India Only" stores block visitors outside India, so they are shown
-   only when the phone's time zone or language says the visitor is in India. */
-const IN_INDIA = (()=>{
-  try{
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-    const langs = (navigator.languages || [navigator.language || ""]).join(",");
-    return /Asia\/(Kolkata|Calcutta)/.test(tz) || /-IN\b/i.test(langs);
-  }catch(e){ return false; }
-})();
 const REGIONS = [
   ["all","All"],["worldwide","Worldwide"],["usa-europe","USA & Europe"],
   ["china","From China"],["india","India"],["india-only","India Only"]
-].filter(r => IN_INDIA || r[0] !== "india-only");
+];
 const CATS = [
   ["all","All"],["marketplace","Marketplaces"],["electronics","Electronics"],["software","Software & Games"],
   ["fashion","Fashion"],["jewelry","Jewelry"],["beauty","Beauty"],["home","Home"],["gifts","Gifts"],
@@ -177,7 +168,7 @@ async function init(){
   document.getElementById("q").addEventListener("input", apply);
   try{
     const r = await fetch("links.json?v=" + Date.now(), {cache:"no-store"});
-    STORES = (await r.json()).stores.filter(s => IN_INDIA || s.region !== "india-only");
+    STORES = (await r.json()).stores;
   }catch(e){ STORES = []; }
   render(); apply();
   autoTranslate();
@@ -225,9 +216,6 @@ async function autoTranslate(){
 }
 
 init();
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", ()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
-}
 </script>
 </body>
 </html>
