@@ -61,8 +61,13 @@ footer a{color:var(--lapis2)}
 body{background:var(--bg);color:var(--ink)}
 header{background:var(--p);background:radial-gradient(120% 140% at 85% 0%,var(--p2) 0%,var(--p) 55%,var(--pdark) 100%);padding:22px 16px 30px;border-radius:0 0 26px 26px}
 .logo h1{color:#fff}
-.logo svg circle:first-child{stroke:var(--cta)}
-.logo svg path:first-of-type{fill:var(--cta)}
+.logo svg circle:first-child{stroke:#8CCFC9;stroke-width:2.2}
+.logo svg path:first-of-type{fill:#E3C891}
+.logo svg path:nth-of-type(2){fill:#BFE3DF;opacity:.45}
+.logo svg circle:last-child{fill:var(--p);stroke:#E3C891}
+.nav{position:fixed;right:14px;bottom:18px;display:flex;flex-direction:column;gap:10px;z-index:20}
+.nav button{width:46px;height:46px;border-radius:50%;border:0;background:var(--p);color:#fff;font-size:1.3rem;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.25);cursor:pointer;opacity:.92;transition:opacity .2s,transform .2s}
+.nav button.hide{opacity:0;transform:scale(.6);pointer-events:none}
 .tagline{color:#fff}
 .chip{border-color:var(--line);font-weight:600}
 .chip.on{background:var(--p);border-color:var(--p);color:#fff}
@@ -123,6 +128,8 @@ footer a{color:var(--p)}
 
 </main>
 
+<div class="nav"><button id="up" class="hide" type="button" aria-label="Back to top">&#8593;</button><button id="down" type="button" aria-label="Go to bottom">&#8595;</button></div>
+
 <footer>
   <a href="#free" onclick="document.getElementById('free').open=true">Why Sogdia is free</a> · <a href="privacy.html">Privacy Policy</a><br> © 2026 Sogdia by DriftforgeDev
 </footer>
@@ -156,7 +163,7 @@ function chipRow(el, list, getVal, setVal){
     const b = document.createElement("button");
     b.className = "chip" + (getVal()===v ? " on" : "");
     b.textContent = t; b.dataset.v = v;
-    b.onclick = ()=>{ ship = false; setVal(v); [...el.children].forEach(c=>c.classList.toggle("on", c.dataset.v===v)); apply(); };
+    b.onclick = ()=>{ ship = false; setVal(v); [...el.children].forEach(c=>c.classList.toggle("on", c.dataset.v===v)); apply(); remember(); };
     el.appendChild(b);
   });
 }
@@ -169,6 +176,24 @@ function initials(n){
   const caps = n.slice(1).match(/[A-Z]/);
   return caps && !/^[A-Z]+$/.test(n.replace(/[^A-Za-z]/g,"")) ? (n[0]+caps[0]).toUpperCase() : n.slice(0,1).toUpperCase();
 }
+/* Phone Back button: return to the previous filter / to the top instead of closing the app. */
+try{ history.scrollRestoration = "manual"; }catch(e){}
+function cur(){ return {region, cat, ship}; }
+function remember(){ try{ history.pushState(cur(), ""); }catch(e){} }
+window.addEventListener("popstate", e=>{
+  const st = e.state || {region:"all", cat:"all", ship:false};
+  region = st.region || "all"; cat = st.cat || "all"; ship = !!st.ship;
+  apply();
+  if (!st.down) window.scrollTo(0, 0);
+});
+window.addEventListener("scroll", ()=>{
+  const y = window.scrollY, max = document.documentElement.scrollHeight - innerHeight;
+  if (y > 500 && !(history.state && history.state.down)){
+    try{ history.pushState(Object.assign(cur(), {down:true}), ""); }catch(e){}
+  }
+  document.getElementById("up").classList.toggle("hide", y < 300);
+  document.getElementById("down").classList.toggle("hide", y > max - 300);
+}, {passive:true});
 function linkFor(s){
   const k = s.active || "primary";
   return s[k] || s.primary || s.official;
@@ -232,9 +257,12 @@ async function init(){
   chipRow(document.getElementById("regions"), REGIONS, ()=>region, v=>region=v);
   chipRow(document.getElementById("cats"), CATS.filter(c => c[0]!=="shipping"), ()=>cat, v=>cat=v);
   document.getElementById("q").addEventListener("input", apply);
+  try{ history.replaceState(cur(), ""); }catch(e){}
+  document.getElementById("up").onclick = ()=>window.scrollTo({top:0, behavior:"smooth"});
+  document.getElementById("down").onclick = ()=>window.scrollTo({top:document.documentElement.scrollHeight, behavior:"smooth"});
   document.getElementById("ship").onclick = ()=>{
     ship = !ship; if (ship){ region = "all"; cat = "all"; }
-    apply(); document.getElementById("count").scrollIntoView({behavior:"smooth", block:"start"});
+    apply(); remember(); document.getElementById("count").scrollIntoView({behavior:"smooth", block:"start"});
   };
   try{
     const r = await fetch("links.json?v=" + Date.now(), {cache:"no-store"});
