@@ -6,7 +6,7 @@
 <meta name="google" content="notranslate">
 <title>Sogdia – Global Shopping</title>
 <meta name="description" content="Sogdia – The world's marketplace, in your language. Trusted partner stores from around the world in one place.">
-<meta name="theme-color" content="#14213d">
+<meta name="theme-color" content="#064E55">
 <style>
 :root{
   --lapis:#14213d; --lapis2:#1f3360; --gold:#e9a23b; --gold2:#f4c46e;
@@ -56,6 +56,29 @@ main{max-width:1000px;margin:0 auto;padding:16px}
 .disclosure{margin:26px 0 8px;padding:14px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:.85rem;color:var(--muted)}
 footer{text-align:center;padding:18px 16px 30px;font-size:.85rem;color:var(--muted)}
 footer a{color:var(--lapis2)}
+
+:root{--p:#064E55;--p2:#0B7F86;--pdark:#043A40;--ptint:#E9EFF0;--cta:#FF6A3D;--cta2:#FF8C66;--ctatint:#FFEDE8;--ctaink:#FFFFFF;--bg:#F2F9F8;--ink:#0F2629;--muted:#4F6669;--line:#D6E8E6}
+body{background:var(--bg);color:var(--ink)}
+header{background:var(--p);background:radial-gradient(120% 140% at 85% 0%,var(--p2) 0%,var(--p) 55%,var(--pdark) 100%);padding:22px 16px 30px;border-radius:0 0 26px 26px}
+.logo h1{color:#fff}
+.logo svg circle:first-child{stroke:var(--cta)}
+.logo svg path:first-of-type{fill:var(--cta)}
+.tagline{color:#fff}
+.chip{border-color:var(--line);font-weight:600}
+.chip.on{background:var(--p);border-color:var(--p);color:#fff}
+.label{color:var(--muted)}
+.search{border-color:var(--line);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.free .plus{background:var(--p)}
+.ship{border-color:var(--cta);background:var(--ctatint)}
+.ship.on{background:var(--p);border-color:var(--p)}
+.grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.card{border-color:var(--line);border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,.05);display:grid;grid-template-columns:58px 1fr;column-gap:12px;row-gap:8px;align-items:center}
+.card .tile{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.25rem;letter-spacing:.02em;box-shadow:inset 0 -6px 12px rgba(0,0,0,.15),0 3px 8px rgba(0,0,0,.12);font-family:Georgia,serif}
+.card .head{display:flex;flex-direction:column;gap:5px;min-width:0}
+.card p,.card .btn,.card .ext{grid-column:1/-1}
+.badge{background:var(--ptint);color:var(--p)}
+.btn{background:var(--cta);background:linear-gradient(180deg,var(--cta2),var(--cta));color:var(--ctaink);border-radius:12px}
+footer a{color:var(--p)}
 </style>
 <meta name="mitgo-verification" content="b3d2a2a8-85b3-4106-ba6e-0605873a3aed" />
 </head>
@@ -138,6 +161,14 @@ function chipRow(el, list, getVal, setVal){
   });
 }
 
+const TILES = ['#0B7F86,#064E55', '#FF6A3D,#E0441A', '#F2A900,#C98700', '#5A4FCF,#3B2FA8', '#E0457B,#B3255A', '#2E8B57,#1F6B41'];
+function hash(t){ let h=0; for (const ch of t) h=(h*31+ch.charCodeAt(0))>>>0; return h; }
+function initials(n){
+  const w = n.replace(/[^A-Za-z0-9 ]/g,"").split(" ").filter(Boolean);
+  if (w.length>1) return (w[0][0]+w[1][0]).toUpperCase();
+  const caps = n.slice(1).match(/[A-Z]/);
+  return caps && !/^[A-Z]+$/.test(n.replace(/[^A-Za-z]/g,"")) ? (n[0]+caps[0]).toUpperCase() : n.slice(0,1).toUpperCase();
+}
 function linkFor(s){
   const k = s.active || "primary";
   return s[k] || s.primary || s.official;
@@ -151,12 +182,14 @@ function render(){
     c.className = "card"; c.dataset.region = s.region; c.dataset.cat = s.category;
     c.dataset.text = (s.name+" "+s.description+" "+s.category).toLowerCase();
     c.innerHTML =
-      '<h3 class="notranslate"></h3>' +
-      '<div class="badges"><span class="badge rg"></span><span class="badge ct"></span></div>' +
+      '<div class="tile notranslate"></div><div class="head"><h3 class="notranslate"></h3>' +
+      '<div class="badges"><span class="badge rg"></span><span class="badge ct"></span></div></div>' +
       '<p></p>' +
       '<a class="btn" target="_blank" rel="sponsored noopener">Visit store</a>' +
       '<div class="ext">Opens partner site</div>';
     c.querySelector("h3").textContent = s.name;
+    const T = c.querySelector(".tile"); T.textContent = initials(s.name);
+    const g2 = TILES[hash(s.name) % TILES.length].split(","); T.style.background = "linear-gradient(145deg,"+g2[0]+","+g2[1]+")";
     const rg = c.querySelector(".rg"); rg.textContent = REGION_NAME[s.region] || s.region;
     if (s.region === "india-only") rg.classList.add("io");
     c.querySelector(".ct").textContent = CAT_NAME[s.category] || s.category;
