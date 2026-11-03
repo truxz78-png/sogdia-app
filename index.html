@@ -29,6 +29,11 @@ main{max-width:1000px;margin:0 auto;padding:16px}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 14px;border-radius:999px;font-size:.9rem;cursor:pointer}
 .chip.on{background:var(--lapis);border-color:var(--lapis);color:#fff}
+.ship{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid var(--gold);background:#fff8ea;color:var(--ink);padding:12px 14px;border-radius:14px;font-size:.95rem;cursor:pointer}
+.ship .ico{font-size:1.7rem;line-height:1}
+.ship small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
+.ship.on{background:var(--lapis);border-color:var(--lapis);color:#fff}
+.ship.on small{color:#dfe5f2}
 .note{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;background:#fff3ef;border:1px solid #f1c9bd;color:#7a2f1e;font-size:.88rem}
 .count{margin:14px 0 8px;color:var(--muted);font-size:.85rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
@@ -83,6 +88,9 @@ footer a{color:var(--lapis2)}
   <div class="label">Category</div>
   <div class="chips" id="cats"></div>
 
+  <div class="label">Package Shipping</div>
+  <button class="ship" id="ship" type="button"><span class="ico">📦</span><span><strong>Ship packages to your country</strong><small>Get an address abroad and receive your orders anywhere</small></span></button>
+
   <div class="note" id="ioNote">These stores only work for shoppers located in India.</div>
 
   <div class="count" id="count"></div>
@@ -113,11 +121,11 @@ const REGIONS = [
 const CATS = [
   ["all","All"],["marketplace","Marketplaces"],["electronics","Electronics"],["software","Software & Games"],
   ["fashion","Fashion"],["jewelry","Jewelry"],["beauty","Beauty"],["home","Home"],["gifts","Gifts"],
-  ["tools","Tools"],["outdoor","Outdoor & Travel"],["kids","Kids"],["shipping","Shipping"]
+  ["tools","Tools"],["outdoor","Outdoor & Travel"],["kids","Kids"],["shipping","Package Shipping"]
 ];
 const REGION_NAME = Object.fromEntries(REGIONS);
 const CAT_NAME = Object.fromEntries(CATS);
-let STORES = [], region = "all", cat = "all", WORD_STORES = "stores available";
+let STORES = [], region = "all", cat = "all", ship = false, WORD_STORES = "stores available";
 
 function chipRow(el, list, getVal, setVal){
   el.innerHTML = "";
@@ -125,7 +133,7 @@ function chipRow(el, list, getVal, setVal){
     const b = document.createElement("button");
     b.className = "chip" + (getVal()===v ? " on" : "");
     b.textContent = t; b.dataset.v = v;
-    b.onclick = ()=>{ setVal(v); [...el.children].forEach(c=>c.classList.toggle("on", c.dataset.v===v)); apply(); };
+    b.onclick = ()=>{ ship = false; setVal(v); [...el.children].forEach(c=>c.classList.toggle("on", c.dataset.v===v)); apply(); };
     el.appendChild(b);
   });
 }
@@ -160,12 +168,14 @@ function render(){
 
 /* Only show categories that have stores in the chosen region (no empty screens). */
 function syncCats(){
-  const has = new Set(STORES.filter(s => region==="all" || s.region===region).map(s => s.category));
+  const has = new Set(STORES.filter(s => (region==="all" || s.region===region) && s.category!=="shipping").map(s => s.category));
   if (cat !== "all" && !has.has(cat)) cat = "all";
   [...document.getElementById("cats").children].forEach(c=>{
     c.style.display = (c.dataset.v==="all" || has.has(c.dataset.v)) ? "" : "none";
-    c.classList.toggle("on", c.dataset.v===cat);
+    c.classList.toggle("on", !ship && c.dataset.v===cat);
   });
+  [...document.getElementById("regions").children].forEach(c=>c.classList.toggle("on", !ship && c.dataset.v===region));
+  document.getElementById("ship").classList.toggle("on", ship);
 }
 
 function apply(){
@@ -173,20 +183,26 @@ function apply(){
   const q = document.getElementById("q").value.trim().toLowerCase();
   let n = 0;
   document.querySelectorAll(".card").forEach(c=>{
-    const ok = (region==="all" || c.dataset.region===region) &&
-               (cat==="all" || c.dataset.cat===cat) &&
+    const ok = (ship ? c.dataset.cat==="shipping" :
+                (c.dataset.cat!=="shipping" &&
+                 (region==="all" || c.dataset.region===region) &&
+                 (cat==="all" || c.dataset.cat===cat))) &&
                (!q || c.dataset.text.includes(q) || c.textContent.toLowerCase().includes(q));
     c.style.display = ok ? "" : "none"; if (ok) n++;
   });
   document.getElementById("count").textContent = n + " " + WORD_STORES;
   document.getElementById("empty").style.display = n ? "none" : "block";
-  document.getElementById("ioNote").style.display = region==="india-only" ? "block" : "none";
+  document.getElementById("ioNote").style.display = (!ship && region==="india-only") ? "block" : "none";
 }
 
 async function init(){
   chipRow(document.getElementById("regions"), REGIONS, ()=>region, v=>region=v);
-  chipRow(document.getElementById("cats"), CATS, ()=>cat, v=>cat=v);
+  chipRow(document.getElementById("cats"), CATS.filter(c => c[0]!=="shipping"), ()=>cat, v=>cat=v);
   document.getElementById("q").addEventListener("input", apply);
+  document.getElementById("ship").onclick = ()=>{
+    ship = !ship; if (ship){ region = "all"; cat = "all"; }
+    apply(); document.getElementById("count").scrollIntoView({behavior:"smooth", block:"start"});
+  };
   try{
     const r = await fetch("links.json?v=" + Date.now(), {cache:"no-store"});
     STORES = (await r.json()).stores.filter(s => IN_INDIA || s.region !== "india-only");
