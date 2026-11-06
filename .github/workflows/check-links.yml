@@ -22,6 +22,9 @@ jobs:
       - name: Check links
         run: python scripts/check_links.py links.json
 
+      - name: Check pages and translator
+        run: python scripts/site_check.py
+
       - name: Save automatic switches
         run: |
           if ! git diff --quiet links.json; then
