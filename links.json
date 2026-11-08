@@ -483,7 +483,7 @@
       "primary": "https://inr.deals/track?id=tru579161545&src=backend&url=https%3A%2F%2Fwww.adidas.co.in",
       "backup": null,
       "official": "https://www.adidas.co.in",
-      "active": "official"
+      "active": "primary"
     },
     {
       "id": "meesho",

@@ -22,7 +22,7 @@ def check(url):
     """Return 'ok', 'broken' or 'uncertain' plus a short detail."""
     if not url:
         return "broken", "no link"
-    last = ""
+    last, slow = "", False
     for _ in range(2):  # retry once
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "en"})
@@ -35,7 +35,11 @@ def check(url):
             return "uncertain", f"HTTP {e.code}"
         except (urllib.error.URLError, socket.timeout, ConnectionError, OSError) as e:
             last = f"error: {getattr(e, 'reason', e)}"
+            if "timed out" in str(last).lower():
+                slow = True  # a slow site is not a dead site
             continue
+    if slow:
+        return "uncertain", "too slow to answer (timeout)"
     return "broken", last
 
 
@@ -46,6 +50,12 @@ def main(path="links.json"):
     for s in data["stores"]:
         name, active = s["name"], s.get("active", "primary")
         st_primary, det = check(s.get("primary"))
+
+        # "India Only" stores block visitors outside India, and the robot runs on a US server,
+        # so it cannot judge them: never switch them, only report.
+        if s.get("region") == "india-only" and st_primary != "ok":
+            uncertain.append(f"- {name}: India-only store, cannot be tested from a US server ({det}) (not changed)")
+            continue
 
         if st_primary == "uncertain":
             uncertain.append(f"- {name}: primary link answered {det} (not changed)")
