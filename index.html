@@ -25,7 +25,7 @@ header{background:linear-gradient(160deg,var(--lapis),var(--lapis2));color:#fff;
 main{max-width:1000px;margin:0 auto;padding:16px}
 .search{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:1rem;background:#fff}
 .label{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 6px}
-.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:4px}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 14px;border-radius:999px;font-size:.9rem;cursor:pointer}
 .chip.on{background:var(--lapis);border-color:var(--lapis);color:#fff}
@@ -65,6 +65,11 @@ header{background:var(--p);background:radial-gradient(120% 140% at 85% 0%,var(--
 .logo svg path:first-of-type{fill:#E3C891}
 .logo svg path:nth-of-type(2){fill:#BFE3DF;opacity:.45}
 .logo svg circle:last-child{fill:var(--p);stroke:#E3C891}
+.mini{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:var(--p);color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.2);transform:translateY(-110%);transition:transform .2s}
+.mini.show{transform:none}
+.mini .cur{font-weight:700;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.minibtn{flex:none;border:0;border-radius:999px;background:var(--cta);color:#fff;font-weight:800;font-size:.95rem;padding:9px 16px;cursor:pointer}
+#filters.float{position:fixed;left:0;right:0;top:56px;z-index:35;max-height:calc(100vh - 70px);overflow:auto;background:var(--bg);padding:4px 16px 16px;box-shadow:0 10px 24px rgba(0,0,0,.25);border-radius:0 0 18px 18px}
 .nav{position:fixed;right:8px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:20}
 .nav button{width:38px;height:38px;border-radius:50%;border:0;background:var(--p);color:#fff;font-size:1.05rem;line-height:1;box-shadow:0 3px 8px rgba(0,0,0,.2);cursor:pointer;opacity:.6;transition:opacity .2s,transform .2s}
 .nav button:active{opacity:.95}
@@ -104,13 +109,12 @@ footer a{color:var(--p)}
 </header>
 
 <main>
-  <input id="q" class="search" type="search" placeholder="Search stores…" aria-label="Search stores">
-
   <details class="free" id="free">
     <summary><span>💡 <strong>Why Sogdia is free:</strong> we may earn a small commission when you shop, at no extra cost to you.</span><b class="plus" aria-hidden="true">+</b></summary>
     <p>Purchases, payments, shipping and returns are handled entirely by each partner store under its own terms. Prices are the same as buying directly from the store.</p>
   </details>
 
+  <div id="filtersWrap"><div id="filters">
   <div class="label">Region</div>
   <div class="chips" id="regions"></div>
 
@@ -119,6 +123,7 @@ footer a{color:var(--p)}
 
   <div class="label">Package Shipping</div>
   <button class="ship" id="ship" type="button"><span class="ico">📦</span><span><strong>Ship packages to your country</strong><small>Get an address abroad and receive your orders anywhere</small></span></button>
+  </div></div>
 
   <div class="note" id="ioNote">These stores only work for shoppers located in India.</div>
 
@@ -129,6 +134,7 @@ footer a{color:var(--p)}
 
 </main>
 
+<div class="mini" id="mini"><span class="cur" id="miniCur"></span><button type="button" id="miniBtn" class="minibtn"><span>Filters</span> <b id="miniSign">+</b></button></div>
 <div class="nav"><button id="up" class="hide" type="button" aria-label="Back to top">&#8593;</button><button id="down" type="button" aria-label="Go to bottom">&#8595;</button></div>
 
 <footer>
@@ -164,7 +170,7 @@ function chipRow(el, list, getVal, setVal){
     const b = document.createElement("button");
     b.className = "chip" + (getVal()===v ? " on" : "");
     b.textContent = t; b.dataset.v = v;
-    b.onclick = ()=>{ ship = false; setVal(v); [...el.children].forEach(c=>c.classList.toggle("on", c.dataset.v===v)); apply(); remember(); };
+    b.onclick = ()=>{ ship = false; setVal(v); [...el.children].forEach(c=>c.classList.toggle("on", c.dataset.v===v)); apply(); remember(); afterPick(); };
     el.appendChild(b);
   });
 }
@@ -185,7 +191,9 @@ window.addEventListener("popstate", e=>{
   const st = e.state || {region:"all", cat:"all", ship:false};
   region = st.region || "all"; cat = st.cat || "all"; ship = !!st.ship;
   apply();
+  if (document.getElementById("filters").classList.contains("float")) openFilters(false);
   if (!st.down) window.scrollTo(0, 0);
+  syncMini();
 });
 window.addEventListener("scroll", ()=>{
   const y = window.scrollY, max = document.documentElement.scrollHeight - innerHeight;
@@ -195,6 +203,35 @@ window.addEventListener("scroll", ()=>{
   document.getElementById("up").classList.toggle("hide", y < 300);
   document.getElementById("down").classList.toggle("hide", y > max - 300);
 }, {passive:true});
+/* Small bar with the current filters that appears when the filters scroll out of view.
+   "Filters +" opens all the filters below it (no sideways scrolling). */
+function miniSummary(){
+  const on = id => { const b = document.querySelector("#"+id+" .chip.on"); return b ? b.textContent : ""; };
+  const sh = document.querySelector("#ship strong");
+  document.getElementById("miniCur").textContent = ship ? ("📦 " + (sh ? sh.textContent : "")) : (on("regions") + " · " + on("cats"));
+}
+function openFilters(open){
+  const f = document.getElementById("filters"), w = document.getElementById("filtersWrap");
+  if (open){ w.style.height = f.offsetHeight + "px"; f.classList.add("float"); }
+  else { f.classList.remove("float"); w.style.height = ""; }
+  document.getElementById("miniSign").textContent = open ? "−" : "+";
+  syncMini();
+}
+function syncMini(){
+  const open = document.getElementById("filters").classList.contains("float");
+  const past = document.getElementById("filtersWrap").getBoundingClientRect().bottom < 0;
+  document.getElementById("mini").classList.toggle("show", open || past);
+  miniSummary();
+}
+window.addEventListener("scroll", syncMini, {passive:true});
+function afterPick(){
+  if (document.getElementById("filters").classList.contains("float")){
+    openFilters(false);
+    document.getElementById("count").scrollIntoView({block:"start"});
+    window.scrollBy(0, -64);
+  }
+  syncMini();
+}
 function linkFor(s){
   const k = s.active || "primary";
   return s[k] || s.primary || s.official;
@@ -239,14 +276,12 @@ function syncCats(){
 
 function apply(){
   syncCats();
-  const q = document.getElementById("q").value.trim().toLowerCase();
   let n = 0;
   document.querySelectorAll(".card").forEach(c=>{
     const ok = (ship ? c.dataset.cat==="shipping" :
                 (c.dataset.cat!=="shipping" &&
                  (region==="all" || c.dataset.region===region) &&
-                 (cat==="all" || c.dataset.cat===cat))) &&
-               (!q || c.dataset.text.includes(q) || c.textContent.toLowerCase().includes(q));
+                 (cat==="all" || c.dataset.cat===cat)));
     c.style.display = ok ? "" : "none"; if (ok) n++;
   });
   document.getElementById("count").textContent = n + " " + WORD_STORES;
@@ -257,14 +292,16 @@ function apply(){
 async function init(){
   chipRow(document.getElementById("regions"), REGIONS, ()=>region, v=>region=v);
   chipRow(document.getElementById("cats"), CATS.filter(c => c[0]!=="shipping"), ()=>cat, v=>cat=v);
-  document.getElementById("q").addEventListener("input", apply);
   try{ history.replaceState(cur(), ""); }catch(e){}
   document.getElementById("up").onclick = ()=>window.scrollTo({top:0, behavior:"smooth"});
   document.getElementById("down").onclick = ()=>window.scrollTo({top:document.documentElement.scrollHeight, behavior:"smooth"});
   document.getElementById("ship").onclick = ()=>{
     ship = !ship; if (ship){ region = "all"; cat = "all"; }
-    apply(); remember(); document.getElementById("count").scrollIntoView({behavior:"smooth", block:"start"});
+    apply(); remember();
+    if (document.getElementById("filters").classList.contains("float")) afterPick();
+    else document.getElementById("count").scrollIntoView({behavior:"smooth", block:"start"});
   };
+  document.getElementById("miniBtn").onclick = ()=>openFilters(!document.getElementById("filters").classList.contains("float"));
   try{
     const r = await fetch("links.json?v=" + Date.now(), {cache:"no-store"});
     STORES = (await r.json()).stores.filter(s => IN_INDIA || s.region !== "india-only");
@@ -292,7 +329,6 @@ async function autoTranslate(){
     }
   });
   const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
-  const ph = document.getElementById("q");
   const tr = async (text)=>{
     if (cache[text]) return cache[text];
     const url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl="+lang+"&dt=t&q="+encodeURIComponent(text);
@@ -309,7 +345,6 @@ async function autoTranslate(){
     }
   }
   await Promise.all(Array.from({length:6}, worker));
-  try{ ph.placeholder = await tr(ph.placeholder); }catch(e){}
   try{ WORD_STORES = (await tr("stores available")).toLowerCase(); apply(); }catch(e){}
   try{ localStorage.setItem("tr_"+lang, JSON.stringify(cache)); }catch(e){}
 }
