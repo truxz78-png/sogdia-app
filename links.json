@@ -671,6 +671,17 @@
       "backup": null,
       "official": "https://www.g-star.com",
       "active": "primary"
+    },
+    {
+      "id": "shein",
+      "name": "SHEIN",
+      "category": "fashion",
+      "region": "worldwide",
+      "description": "Global fashion and lifestyle store with new styles every week: clothing, shoes, beauty and home.",
+      "primary": "https://thevospad.com/g/1kjlqr06u0d2f8e3e048f0af71e07a/",
+      "backup": null,
+      "official": "https://www.shein.com",
+      "active": "primary"
     }
   ]
 }
