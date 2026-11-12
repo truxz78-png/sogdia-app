@@ -13,6 +13,8 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.browser.customtabs.CustomTabColorSchemeParams;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -126,7 +128,31 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Partner stores open in a Chrome Custom Tab on top of Sogdia, so the phone's Back button
+     * closes the store and returns to Sogdia exactly where the shopper was.
+     * Affiliate tracking works the same as in Chrome. If no browser supports Custom Tabs,
+     * the link opens in the normal browser.
+     */
     private void openExternal(Uri uri) {
+        String scheme = uri.getScheme() == null ? "" : uri.getScheme().toLowerCase();
+        if (scheme.equals("https") || scheme.equals("http")) {
+            try {
+                CustomTabColorSchemeParams colors = new CustomTabColorSchemeParams.Builder()
+                        .setToolbarColor(getColor(R.color.lapis))
+                        .setNavigationBarColor(getColor(R.color.lapis))
+                        .build();
+                CustomTabsIntent tab = new CustomTabsIntent.Builder()
+                        .setDefaultColorSchemeParams(colors)
+                        .setShowTitle(true)
+                        .setShareState(CustomTabsIntent.SHARE_STATE_ON)
+                        .build();
+                tab.launchUrl(this, uri);
+                return;
+            } catch (ActivityNotFoundException ignored) {
+                // fall through to the normal browser
+            }
+        }
         try {
             Intent i = new Intent(Intent.ACTION_VIEW, uri);
             i.addCategory(Intent.CATEGORY_BROWSABLE);
