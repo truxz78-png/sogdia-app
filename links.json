@@ -660,6 +660,17 @@
       "backup": null,
       "official": "https://www.gonoise.com",
       "active": "primary"
+    },
+    {
+      "id": "gstar",
+      "name": "G-Star RAW",
+      "category": "fashion",
+      "region": "usa-europe",
+      "description": "Dutch denim brand: premium jeans, jackets and streetwear for men and women.",
+      "primary": "https://ntzgd.com/g/vdi4nbdn0td2f8e3e04815fcaa1c5f/",
+      "backup": null,
+      "official": "https://www.g-star.com",
+      "active": "primary"
     }
   ]
 }
