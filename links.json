@@ -358,11 +358,12 @@
       "name": "Taobao",
       "category": "marketplace",
       "region": "china",
-      "description": "China's biggest online marketplace.",
+      "description": "China's biggest online marketplace. The website is in Chinese.",
       "primary": "https://invl.me/clo29s7",
       "backup": null,
       "official": "https://world.taobao.com",
-      "active": "primary"
+      "active": "primary",
+      "warn": "Chinese website"
     },
     {
       "id": "tatacliq",

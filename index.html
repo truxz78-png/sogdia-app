@@ -256,6 +256,7 @@ function render(){
     const rg = c.querySelector(".rg"); rg.textContent = REGION_NAME[s.region] || s.region;
     if (s.region === "india-only") rg.classList.add("io");
     c.querySelector(".ct").textContent = CAT_NAME[s.category] || s.category;
+    if (s.warn) { const w=document.createElement("span"); w.className="badge io"; w.textContent=s.warn; c.querySelector(".badges").appendChild(w); }
     c.querySelector("p").textContent = s.description;
     c.querySelector("a").href = linkFor(s);
     g.appendChild(c);
